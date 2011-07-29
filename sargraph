@@ -5,7 +5,7 @@
 # Our dependencies
 ZENITY="/usr/bin/zenity"
 XSLTPROC="/usr/bin/xsltproc"
-SADF="/usr/local/bin/sadf"
+SADF="/usr/bin/sadf"
 GNUPLOT="/usr/bin/gnuplot"
 MKTEMP="/bin/mktemp"
 FIND="/usr/bin/find"
@@ -363,20 +363,24 @@ EOF
 
 # Main
 
-while /bin/true; do
+#while /bin/true; do
 
 # Prompt for sar file
 
 SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r | $CUT -d, -f2`
-SARFILE=`$ZENITY --list --text "Select data source" --column "sar file" $SARLIST`
+echo "DEBUG: SARLIST=${SARLIST}"
+#SARFILE=`$ZENITY --list --text "Select data source" --column "sar file" $SARLIST`
+SARFILE="/var/log/sa/sa24"
 if [ "$SARFILE" == "" ]; then
     exit
 fi
 
 # Prompt for graph
 
-GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
+#GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
 
+for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
+do
 case "$GRAPH" in
     "CPU")
 	XSLTFILE=`mktemp`
@@ -479,8 +483,9 @@ case "$GRAPH" in
 	exit
 	;;
 esac
-
 done
+
+#done
 
 exit
 
