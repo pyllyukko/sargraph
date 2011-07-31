@@ -294,6 +294,8 @@ memuse_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./memory/memfree"/>
@@ -322,10 +324,12 @@ set term png
 set output '${SARFILE##*/}-memuse.png'
 set title "sar -r"
 set ylabel "kB"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
-plot "$2" using 1:2 t "kbmemfree" with line, "$2" using 1:3 t "kbmemused" with line, "$2" using 1:4 t "kbbuffers" with line, "$2" using 1:5 t "kbcached" with line, "$2" using 1:6 t "swpfree" with line, "$2" using 1:7 t "swpused" with line, "$2" using 1:8 t "swpcad" with line
+#plot "$2" using 1:2 t "kbmemfree" with line, "$2" using 1:3 t "kbmemused" with line, "$2" using 1:4 t "kbbuffers" with line, "$2" using 1:5 t "kbcached" with line, "$2" using 1:6 t "swpfree" with line, "$2" using 1:7 t "swpused" with line, "$2" using 1:8 t "swpcad" with line
+plot "$2" using 1:2 t "kbmemfree" with line, "$2" using 1:3 t "kbmemused" with line, "$2" using 1:4 t "kbbuffers" with line, "$2" using 1:5 t "kbcached" with line
 #pause mouse
 EOF
 }
@@ -376,9 +380,10 @@ EOF
 # Prompt for sar file
 
 SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r | $CUT -d, -f2`
-echo "DEBUG: SARLIST=${SARLIST}"
 #SARFILE=`$ZENITY --list --text "Select data source" --column "sar file" $SARLIST`
-SARFILE="/var/log/sa/sa24"
+#SARFILE="/var/log/sa/sa24"
+for SARFILE in ${SARLIST}
+do
 if [ "$SARFILE" == "" ]; then
     exit
 fi
@@ -387,7 +392,8 @@ fi
 
 #GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
 
-for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
+# "NFS Client" not in the list
+for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
 do
 case "$GRAPH" in
     "CPU")
@@ -491,7 +497,8 @@ case "$GRAPH" in
 	exit
 	;;
 esac
-done
+done # for GRAPH in ...
+done # for SARFILE in ${SARLIST}
 
 exit
 
