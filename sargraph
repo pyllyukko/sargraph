@@ -384,19 +384,19 @@ SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r 
 #SARFILE="/var/log/sa/sa24"
 for SARFILE in ${SARLIST}
 do
-if [ "$SARFILE" == "" ]; then
+  if [ "$SARFILE" == "" ]; then
     exit
-fi
+  fi
 
-# Prompt for graph
+  # Prompt for graph
 
-#GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
+  #GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
 
-# "NFS Client" not in the list
-for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
-do
-case "$GRAPH" in
-    "CPU")
+  # "NFS Client" not in the list
+  for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
+  do
+    case "$GRAPH" in
+      "CPU")
 	XSLTFILE=`mktemp`
 	cpu_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -408,7 +408,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "Run Queue")
+      "Run Queue")
 	XSLTFILE=`mktemp`
 	rq_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -420,7 +420,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "Run Queue w/o Process List Size")
+      "Run Queue w/o Process List Size")
 	XSLTFILE=`mktemp`
 	rqnoplistsz_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -432,7 +432,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "IO Transfer Rate")
+      "IO Transfer Rate")
 	XSLTFILE=`mktemp`
 	io_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -444,7 +444,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "NFS Client")
+      "NFS Client")
 	XSLTFILE=`mktemp`
 	nfsclient_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -456,7 +456,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "Paging Stats")
+      "Paging Stats")
 	XSLTFILE=`mktemp`
 	paging_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -468,7 +468,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "Memory Utilization")
+      "Memory Utilization")
 	XSLTFILE=`mktemp`
 	memuse_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -480,7 +480,7 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    "Memory Utilization (Swap)")
+      "Memory Utilization (Swap)")
 	XSLTFILE=`mktemp`
 	swapuse_xslt $XSLTFILE
 	DATAFILE=`mktemp`
@@ -492,12 +492,12 @@ case "$GRAPH" in
 	rm $DATAFILE
 	rm $XSLTFILE
 	;;
-    *)
+      *)
 	# If you click "Cancel", you end up here and exit
 	exit
 	;;
-esac
-done # for GRAPH in ...
+    esac
+  done # for GRAPH in ...
 done # for SARFILE in ${SARLIST}
 
 exit
