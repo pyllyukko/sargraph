@@ -53,7 +53,7 @@ cpu_gnuplot() {
 #set yrange [0:100]
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-cpu.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-cpu.png'
 set title "sar -u"
 set ylabel "Percent"
 set timefmt "%H:%M:%S"
@@ -102,7 +102,7 @@ EOF
 rq_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-rq.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-rq.png'
 set title "sar -q"
 set ylabel ""
 set timefmt "%H:%M:%S"
@@ -143,7 +143,7 @@ EOF
 rqnoplistsz_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-rqnoplistsz.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-rqnoplistsz.png'
 set title "sar -q"
 set ylabel ""
 set timefmt "%H:%M:%S"
@@ -186,7 +186,7 @@ EOF
 io_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-io.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-io.png'
 set title "sar -b"
 set ylabel "ops/s"
 set timefmt "%H:%M:%S"
@@ -231,7 +231,7 @@ EOF
 nfsclient_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-nfsclient.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-nfsclient.png'
 set title "sar -n NFS"
 set ylabel "ops/s"
 set timefmt "%H:%M:%S"
@@ -272,7 +272,7 @@ EOF
 paging_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-paging.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-paging.png'
 set title "sar -B"
 set ylabel "pages/s"
 set timefmt "%H:%M:%S"
@@ -321,7 +321,7 @@ EOF
 memuse_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-memuse.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-memuse.png'
 set title "sar -r"
 set ylabel "kB"
 #set timefmt "%H:%M:%S"
@@ -362,7 +362,7 @@ EOF
 swapuse_gnuplot() {
     cat > $1 <<EOF
 set term png
-set output '${SARFILE##*/}-swapuse.png'
+set output '${GRAPHPATH}/${SARFILE##*/}-swapuse.png'
 set title "sar -S"
 set ylabel "kB"
 set timefmt "%H:%M:%S"
@@ -380,6 +380,7 @@ EOF
 # Prompt for sar file
 
 SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r | $CUT -d, -f2`
+GRAPHPATH="./"
 #SARFILE=`$ZENITY --list --text "Select data source" --column "sar file" $SARLIST`
 #SARFILE="/var/log/sa/sa24"
 for SARFILE in ${SARLIST}
