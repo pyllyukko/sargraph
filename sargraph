@@ -53,7 +53,8 @@ cpu_gnuplot() {
     # Create the GNUplot rendering file, largely based on "isag" Tk script from sysstat package
 #set yrange [0:100]
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-cpu.png'
 set title "sar -u (${GRAPH})"
 set ylabel "Percent"
@@ -102,7 +103,8 @@ EOF
 
 rq_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-rq.png'
 set title "sar -q (${GRAPH})"
 set ylabel ""
@@ -143,7 +145,8 @@ EOF
 
 rqnoplistsz_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-rqnoplistsz.png'
 set title "sar -q (${GRAPH})"
 set ylabel ""
@@ -186,7 +189,8 @@ EOF
 
 io_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-io.png'
 set title "sar -b (${GRAPH})"
 set ylabel "ops/s"
@@ -231,7 +235,8 @@ EOF
 
 nfsclient_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-nfsclient.png'
 set title "sar -n NFS (${GRAPH})"
 set ylabel "ops/s"
@@ -272,7 +277,8 @@ EOF
 
 paging_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-paging.png'
 set title "sar -B (${GRAPH})"
 set ylabel "pages/s"
@@ -321,7 +327,8 @@ EOF
 
 memuse_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-memuse.png'
 set title "sar -r (${GRAPH})"
 set ylabel "kB"
@@ -362,7 +369,8 @@ EOF
 
 swapuse_gnuplot() {
     cat > $1 <<EOF
-set term png
+#set term png
+set term png enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12
 set output '${GRAPHPATH}/${SARFILE##*/}-swapuse.png'
 set title "sar -S (${GRAPH})"
 set ylabel "kB"
@@ -386,9 +394,12 @@ do
     exit
   fi
 
+  echo "processing ${SARFILE}"
+
   # "NFS Client" not in the list
   for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
   do
+    echo "  ${GRAPH}..."
     case "$GRAPH" in
       "CPU")
 	XSLTFILE=`mktemp`
