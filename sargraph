@@ -396,6 +396,9 @@ do
 
   echo "processing ${SARFILE}"
 
+  # check the headers, so we don't start processing invalid files or other files...
+  ${SADF} -H "${SARFILE}" 1>/dev/null || continue
+
   # "NFS Client" not in the list
   for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
   do
