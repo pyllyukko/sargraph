@@ -2,6 +2,8 @@
 # sargraph - a simple sketch on how to generate graphs from sadf XML output
 # by Lans.Carstensen@dreamworks.com <Lans Carstensen>
 
+# modified by p...
+
 # Our dependencies
 XSLTPROC="/usr/bin/xsltproc"
 SADF="/usr/bin/sadf"
@@ -374,11 +376,11 @@ EOF
 
 # Main
 
-SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r | $CUT -d, -f2`
+SARLIST=(`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`)
 #SARFILE="/var/log/sa/sa24"
 GRAPHPATH="./"
 
-for SARFILE in ${SARLIST}
+for SARFILE in ${SARLIST[*]}
 do
   if [ "$SARFILE" == "" ]; then
     exit
