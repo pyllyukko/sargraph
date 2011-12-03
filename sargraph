@@ -3,7 +3,6 @@
 # by Lans.Carstensen@dreamworks.com <Lans Carstensen>
 
 # Our dependencies
-#ZENITY="/usr/bin/zenity"
 XSLTPROC="/usr/bin/xsltproc"
 SADF="/usr/bin/sadf"
 GNUPLOT="/usr/bin/gnuplot"
@@ -54,7 +53,7 @@ cpu_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-cpu.png'
-set title "sar -u"
+set title "sar -u (${GRAPH})"
 set ylabel "Percent"
 set timefmt "%H:%M:%S"
 set xdata time
@@ -103,7 +102,7 @@ rq_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-rq.png'
-set title "sar -q"
+set title "sar -q (${GRAPH})"
 set ylabel ""
 set timefmt "%H:%M:%S"
 set xdata time
@@ -144,7 +143,7 @@ rqnoplistsz_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-rqnoplistsz.png'
-set title "sar -q"
+set title "sar -q (${GRAPH})"
 set ylabel ""
 set timefmt "%H:%M:%S"
 set xdata time
@@ -187,7 +186,7 @@ io_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-io.png'
-set title "sar -b"
+set title "sar -b (${GRAPH})"
 set ylabel "ops/s"
 set timefmt "%H:%M:%S"
 set xdata time
@@ -232,7 +231,7 @@ nfsclient_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-nfsclient.png'
-set title "sar -n NFS"
+set title "sar -n NFS (${GRAPH})"
 set ylabel "ops/s"
 set timefmt "%H:%M:%S"
 set xdata time
@@ -273,7 +272,7 @@ paging_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-paging.png'
-set title "sar -B"
+set title "sar -B (${GRAPH})"
 set ylabel "pages/s"
 set timefmt "%H:%M:%S"
 set xdata time
@@ -322,7 +321,7 @@ memuse_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-memuse.png'
-set title "sar -r"
+set title "sar -r (${GRAPH})"
 set ylabel "kB"
 #set timefmt "%H:%M:%S"
 set timefmt "%Y-%m-%d/%H:%M:%S"
@@ -363,7 +362,7 @@ swapuse_gnuplot() {
     cat > $1 <<EOF
 set term png
 set output '${GRAPHPATH}/${SARFILE##*/}-swapuse.png'
-set title "sar -S"
+set title "sar -S (${GRAPH})"
 set ylabel "kB"
 set timefmt "%H:%M:%S"
 set xdata time
@@ -375,23 +374,15 @@ EOF
 
 # Main
 
-#while /bin/true; do
-
-# Prompt for sar file
-
 SARLIST=`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n'| $SORT -n -r | $CUT -d, -f2`
-GRAPHPATH="./"
-#SARFILE=`$ZENITY --list --text "Select data source" --column "sar file" $SARLIST`
 #SARFILE="/var/log/sa/sa24"
+GRAPHPATH="./"
+
 for SARFILE in ${SARLIST}
 do
   if [ "$SARFILE" == "" ]; then
     exit
   fi
-
-  # Prompt for graph
-
-  #GRAPH=`$ZENITY --list --text "Select a graph" --column "Graph Type" "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "NFS Client" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"`
 
   # "NFS Client" not in the list
   for GRAPH in "CPU" "Run Queue" "Run Queue w/o Process List Size" "IO Transfer Rate" "Paging Stats" "Memory Utilization" "Memory Utilization (Swap)"
