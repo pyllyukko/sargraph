@@ -7,11 +7,12 @@
 # Our dependencies
 XSLTPROC="/usr/bin/xsltproc"
 SADF="/usr/bin/sadf"
+#SADF=~/tools/sysstat-7.0.2/sadf
 GNUPLOT="/usr/bin/gnuplot"
 MKTEMP="/bin/mktemp"
 FIND="/usr/bin/find"
-SORT="/bin/sort"
-CUT="/bin/cut"
+SORT=`which sort`
+CUT=`which cut`
 
 FONT="enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12"
 
@@ -33,6 +34,8 @@ cpu_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./cpu-load/cpu[@number='all']/@user"/>
@@ -60,7 +63,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-cpu.png'
 set title "sar -u (${GRAPH})"
 set ylabel "Percent"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "%user" with line, "$2" using 1:3 t "%nice" with line, "$2" using 1:4 t "%system" with line, "$2" using 1:5 t "%iowait" with line, "$2" using 1:6 t "%steal" with line
@@ -85,6 +89,8 @@ rq_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./queue/@runq-sz"/>
@@ -110,7 +116,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-rq.png'
 set title "sar -q (${GRAPH})"
 set ylabel ""
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "runq-sz" with line, "$2" using 1:3 t "plist-sz" with line, "$2" using 1:4 t "ldavg-1" with line, "$2" using 1:5 t "ldavg-5" with line, "$2" using 1:6 t "ldavg-15" with line
@@ -129,6 +136,8 @@ rqnoplistsz_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./queue/@runq-sz"/>
@@ -152,7 +161,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-rqnoplistsz.png'
 set title "sar -q (${GRAPH})"
 set ylabel ""
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "runq-sz" with line, "$2" using 1:3 t "ldavg-1" with line, "$2" using 1:4 t "ldavg-5" with line, "$2" using 1:5 t "ldavg-15" with line
@@ -171,6 +181,8 @@ io_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./io/tps"/>
@@ -196,7 +208,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-io.png'
 set title "sar -b (${GRAPH})"
 set ylabel "ops/s"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "rtps" with line, "$2" using 1:3 t "wtps" with line, "$2" using 1:4 t "bread/s" with line,  "$2" using 1:5 t "bwrtn/s" with line
@@ -215,6 +228,8 @@ nfsclient_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./network/net-nfs/@call"/>
@@ -242,7 +257,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-nfsclient.png'
 set title "sar -n NFS (${GRAPH})"
 set ylabel "ops/s"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "call/s" with line, "$2" using 1:3 t "retrans/s" with line, "$2" using 1:4 t "read/s" with line,  "$2" using 1:5 t "write/s" with line, "$2" using 1:6 t "access/s" with line, "$2" using 1:7 t "getatt/s" with line
@@ -261,6 +277,8 @@ paging_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./paging/@pgpgin"/>
@@ -284,7 +302,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-paging.png'
 set title "sar -B (${GRAPH})"
 set ylabel "pages/s"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "pgpgin/s" with line, "$2" using 1:3 t "pgpgout/s" with line, "$2" using 1:4 t "fault/s" with line, "$2" using 1:5 t "majflt/s" with line
@@ -355,6 +374,8 @@ swapuse_xslt() {
 <xsl:template match="/sysstat/host/statistics">
 <xsl:text>&#10;</xsl:text>
 <xsl:for-each select="timestamp">
+<xsl:value-of select="@date"/>
+<xsl:text>/</xsl:text>
 <xsl:value-of select="@time"/>
 <xsl:text> </xsl:text>
 <xsl:value-of select="./memory/swpfree"/>
@@ -376,7 +397,8 @@ set term png ${FONT}
 set output '${GRAPHPATH}/${SARFILE##*/}-swapuse.png'
 set title "sar -S (${GRAPH})"
 set ylabel "kB"
-set timefmt "%H:%M:%S"
+#set timefmt "%H:%M:%S"
+set timefmt "%Y-%m-%d/%H:%M:%S"
 set xdata time
 set format x "%H:%M"
 plot "$2" using 1:2 t "swpfree" with line, "$2" using 1:3 t "swpused" with line, "$2" using 1:4 t "swpcad" with line
@@ -386,9 +408,11 @@ EOF
 
 # Main
 
-SARLIST=(`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`)
+#SARLIST=(`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`)
+SARLIST=(`$FIND /var/log/sarchive -name 'sa-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`)
 #SARFILE="/var/log/sa/sa24"
-GRAPHPATH="./"
+#GRAPHPATH="./"
+GRAPHPATH="/var/www/intra/graphs/sar"
 
 for SARFILE in ${SARLIST[*]}
 do
@@ -397,7 +421,7 @@ do
   fi
 
   # TEMPORARY!
-  GRAPHPATH=`dirname "${SARFILE}"`
+  #GRAPHPATH=`dirname "${SARFILE}"`
 
   echo "processing ${SARFILE}"
 
