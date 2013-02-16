@@ -21,6 +21,8 @@ CUT=`which cut`
 
 FONT="enhanced font '/usr/share/fonts/TTF/LiberationSans-Regular.ttf' 12"
 TODATE=$( date +%d )
+CURRMONTH=$( date +%Y%m )
+GRAPHPATHBASE="/var/www/intra/graphs/sar"
 
 # sar / sysstat DTD is published here:
 # http://pagesperso-orange.fr/sebastien.godard/sysstat.dtd
@@ -415,27 +417,55 @@ EOF
 # Main
 
 #SARLIST=(`$FIND /var/log/sa -name 'sa[0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`)
-SARLIST=(`$FIND /var/log/sarchive -name 'sa-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2` "/var/log/sa/sa${TODATE}")
+SARLIST=(
+  #`$FIND /var/log/sarchive -name 'sa-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`
+  #`$FIND /var/log/sa/20[0-9][0-9][0-9][0-9] -name 'sa-[0-9][0-9]' -printf '%T@,%p\n' | $SORT -n -r | $CUT -d, -f2`
+  `$FIND /var/log/sa/20[0-9][0-9][0-9][0-9] \( -name 'sa[0-9][0-9]' -o -name 'sa[0-9][0-9].bz2' \)`
+  "/var/log/sa/sa${TODATE}"
+)
 #SARFILE="/var/log/sa/sa24"
 #GRAPHPATH="./"
-GRAPHPATHBASE="/var/www/intra/graphs/sar"
 
 for SARFILE in ${SARLIST[*]}
 do
+  #echo "DEBUG: SARFILE=${SARFILE}"
   if [ "$SARFILE" == "" ]; then
     exit
   fi
 
-  if [ "${SARFILE%/*}" = "/var/log/sarchive" ]
+  if [ "${SARFILE:(-4):4}" = ".bz2" ]
   then
-    GRAPHPATH="${GRAPHPATHBASE}/${SARFILE:(-8):6}"
+    # output to stdout. if this is run from cron, stderr get mailed to admin.
+    echo "warning: bz2 not yet supported!"
+    continue
+  fi
+
+  #if [ "${SARFILE%/*}" = "/var/log/sarchive" ]
+  if [[ "${SARFILE}" =~ ^/var/log/sa/(20[0-9]{4})/.*$ ]]
+  then
+    MONTH="${BASH_REMATCH[1]}"
+    #GRAPHPATH="${GRAPHPATHBASE}/${SARFILE:(-8):6}"
+    GRAPHPATH="${GRAPHPATHBASE}/${MONTH}"
+    #echo "DEBUG: ${SARFILE:(-8):6}"
+    #echo "DEBUG: GRAPHPATH=${GRAPHPATH}"
   else
     GRAPHPATH="${GRAPHPATHBASE}"
     #echo "DEBUG: ${SARFILE:(-8):6}"
   fi
 
+  # today
+  if [ "${SARFILE}" = "/var/log/sa/${CURRMONTH}/sa${TODATE}" ]
+  then
+    echo "skipping today's sarfile \`${SARFILE}'"
+    continue
+  fi
+
+  #echo -n $'\n'
+  #continue
+
   # don't create these files if they already exist.
-  if [ "${SARFILE%/*}" = "/var/log/sarchive" -a \
+  #if [ "${SARFILE%/*}" = "/var/log/sarchive" -a \
+  if [[ "${SARFILE%/*}" =~ ^/var/log/sa/20[0-9]{4}$ ]] && [ \
        -f "${GRAPHPATH}/${SARFILE##*/}-cpu.png" -a \
        -f "${GRAPHPATH}/${SARFILE##*/}-io.png" -a \
        -f "${GRAPHPATH}/${SARFILE##*/}-memuse.png" -a \
