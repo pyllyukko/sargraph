@@ -603,6 +603,7 @@ do
 	;;
     esac
   done # for GRAPH in ...
+  echo -n $'\n'
 done # for SARFILE in ${SARLIST}
 
 # create the latest graphs
