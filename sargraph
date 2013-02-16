@@ -426,6 +426,12 @@ SARLIST=(
 #SARFILE="/var/log/sa/sa24"
 #GRAPHPATH="./"
 
+if [ ! -d "${GRAPHPATHBASE}" ]
+then
+  echo "error: directory \`${GRAPHPATHBASE}' does not exist! either create it, or modify the GRAPHPATHBASE variable in this script." 1>&2
+  exit 1
+fi
+
 for SARFILE in ${SARLIST[*]}
 do
   #echo "DEBUG: SARFILE=${SARFILE}"
